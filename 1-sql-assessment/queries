@@ -1,1 +1,180 @@
+-- Stores information about retail branches
+CREATE TABLE branch_details (
+    branch_code VARCHAR(10) PRIMARY KEY,
+    branch_name VARCHAR(100),
+    region_id INT,
+    operation_start_date DATE,
+    is_active BOOLEAN,
+    max_capacity INT,
+    last_renovation_date DATE
+);
+
+-- Staff information across branches
+CREATE TABLE staff_records (
+    staff_id VARCHAR(15) PRIMARY KEY,
+    branch_code VARCHAR(10),
+    join_date DATE,
+    role_code VARCHAR(5),
+    base_salary DECIMAL(12,2),
+    supervisor_id VARCHAR(15),
+    resignation_date DATE,
+    performance_score DECIMAL(3,2),
+    FOREIGN KEY (branch_code) REFERENCES branch_details(branch_code)
+);
+
+-- Product catalog with hierarchical categories
+CREATE TABLE product_hierarchy (
+    product_code VARCHAR(20) PRIMARY KEY,
+    product_name VARCHAR(100),
+    category_l1 VARCHAR(50),  -- Main category
+    category_l2 VARCHAR(50),  -- Sub-category
+    category_l3 VARCHAR(50),  -- Detailed category
+    unit_cost DECIMAL(12,2),
+    unit_price DECIMAL(12,2),
+    supplier_id VARCHAR(10),
+    minimum_stock INT,
+    is_perishable BOOLEAN
+);
+
+-- Daily inventory movements
+CREATE TABLE inventory_movements (
+    movement_id BIGINT PRIMARY KEY,
+    product_code VARCHAR(20),
+    branch_code VARCHAR(10),
+    transaction_type CHAR(3),  -- IN, OUT, ADJ (adjustment), RTN (return), EXP (expired)
+    quantity INT,
+    transaction_date DATE,
+    batch_number VARCHAR(20),
+    expiry_date DATE,
+    unit_cost_at_time DECIMAL(12,2),
+    FOREIGN KEY (product_code) REFERENCES product_hierarchy(product_code),
+    FOREIGN KEY (branch_code) REFERENCES branch_details(branch_code)
+);
+
+-- Sales transactions
+CREATE TABLE sales_transactions (
+    transaction_id VARCHAR(30) PRIMARY KEY,
+    branch_code VARCHAR(10),
+    transaction_date TIMESTAMP,
+    staff_id VARCHAR(15),
+    payment_method VARCHAR(10),
+    total_amount DECIMAL(12,2),
+    discount_amount DECIMAL(12,2),
+    loyalty_points_earned INT,
+    loyalty_points_redeemed INT,
+    customer_id VARCHAR(20),
+    FOREIGN KEY (branch_code) REFERENCES branch_details(branch_code),
+    FOREIGN KEY (staff_id) REFERENCES staff_records(staff_id)
+);
+
+-- Sales transaction details
+CREATE TABLE sales_line_items (
+    transaction_id VARCHAR(30),
+    line_number INT,
+    product_code VARCHAR(20),
+    quantity INT,
+    unit_price_at_time DECIMAL(12,2),
+    discount_percentage DECIMAL(5,2),
+    total_line_amount DECIMAL(12,2),
+    PRIMARY KEY (transaction_id, line_number),
+    FOREIGN KEY (transaction_id) REFERENCES sales_transactions(transaction_id),
+    FOREIGN KEY (product_code) REFERENCES product_hierarchy(product_code)
+);
+
+-- Insert data into branch_details
+INSERT INTO branch_details 
+(branch_code, branch_name, region_id, operation_start_date, is_active, max_capacity, last_renovation_date)
+VALUES
+('BR001', 'Downtown Branch', 1, '2015-06-01', TRUE, 500, '2021-03-15'),
+('BR002', 'Uptown Branch', 1, '2017-11-15', TRUE, 300, '2022-05-20'),
+('BR003', 'Suburban Branch', 2, '2019-02-10', TRUE, 400, '2023-01-05'),
+('BR004', 'Rural Branch', 3, '2018-07-22', FALSE, 200, '2020-10-10'),
+('BR005', 'City Center Branch', 1, '2020-03-01', TRUE, 600, '2024-01-01'),
+('BR006', 'Eastside Branch', 2, '2016-04-20', TRUE, 350, '2023-05-10'),
+('BR007', 'Westside Branch', 3, '2018-08-15', FALSE, 250, '2022-12-01'),
+('BR008', 'Lakeside Branch', 2, '2019-05-01', TRUE, 400, '2023-03-15'),
+('BR009', 'Mountain Branch', 3, '2017-09-10', FALSE, 150, '2021-08-20'),
+('BR010', 'Harbor Branch', 1, '2021-10-15', TRUE, 500, '2024-07-01');
+
+-- Insert data into staff_records
+INSERT INTO staff_records 
+(staff_id, branch_code, join_date, role_code, base_salary, supervisor_id, resignation_date, performance_score)
+VALUES
+('STF001', 'BR001', '2016-08-01', 'MGR', 75000.00, NULL, NULL, 4.5),
+('STF002', 'BR002', '2017-01-15', 'ASM', 55000.00, 'STF001', NULL, 4.0),
+('STF003', 'BR003', '2018-06-01', 'CASH', 35000.00, 'STF002', '2023-05-10', 3.8),
+('STF004', 'BR004', '2019-12-01', 'STKR', 30000.00, 'STF001', NULL, 3.6),
+('STF005', 'BR005', '2020-02-15', 'MGR', 70000.00, NULL, NULL, 4.7),
+('STF006', 'BR006', '2016-07-20', 'ASM', 56000.00, 'STF005', NULL, 4.3),
+('STF007', 'BR007', '2018-10-01', 'CASH', 32000.00, 'STF006', '2022-12-15', 3.9),
+('STF008', 'BR008', '2019-03-10', 'STKR', 28000.00, 'STF005', NULL, 3.5),
+('STF009', 'BR009', '2017-11-20', 'MGR', 74000.00, NULL, NULL, 4.8),
+('STF010', 'BR010', '2021-12-15', 'CASH', 36000.00, 'STF009', NULL, 4.2);
+
+-- Insert data into product_hierarchy
+INSERT INTO product_hierarchy 
+(product_code, product_name, category_l1, category_l2, category_l3, unit_cost, unit_price, supplier_id, minimum_stock, is_perishable)
+VALUES
+('P001', 'Whole Wheat Bread', 'Food', 'Bakery', 'Bread', 1.50, 2.50, 'SUP001', 50, TRUE),
+('P002', 'Almond Milk', 'Food', 'Dairy Alternatives', 'Milk', 2.00, 3.50, 'SUP002', 30, TRUE),
+('P003', 'LED Bulb 12W', 'Electronics', 'Lighting', 'LED Bulbs', 4.00, 7.50, 'SUP003', 20, FALSE),
+('P004', 'Yoga Mat', 'Fitness', 'Accessories', 'Mats', 10.00, 15.00, 'SUP004', 15, FALSE),
+('P005', 'Orange Juice', 'Food', 'Beverages', 'Juice', 2.50, 4.00, 'SUP005', 40, TRUE),
+('P006', 'Running Shoes', 'Footwear', 'Sports', 'Shoes', 30.00, 50.00, 'SUP006', 10, FALSE),
+('P007', 'Notebook', 'Stationery', 'Office Supplies', 'Paper', 1.00, 2.00, 'SUP007', 100, FALSE),
+('P008', 'Chocolate Bar', 'Food', 'Snacks', 'Chocolate', 0.80, 1.50, 'SUP008', 200, TRUE),
+('P009', 'Shampoo', 'Personal Care', 'Hair Care', 'Shampoo', 3.50, 5.00, 'SUP009', 30, FALSE),
+('P010', 'Canned Beans', 'Food', 'Canned Goods', 'Beans', 1.20, 2.00, 'SUP010', 60, FALSE);
+
+-- Insert data into inventory_movements
+INSERT INTO inventory_movements 
+(movement_id, product_code, branch_code, transaction_type, quantity, transaction_date, batch_number, expiry_date, unit_cost_at_time)
+VALUES
+(1, 'P001', 'BR001', 'IN', 100, '2025-01-01', 'BATCH001', '2025-02-01', 1.50),
+(2, 'P002', 'BR002', 'IN', 50, '2025-01-05', 'BATCH002', '2025-02-10', 2.00),
+(3, 'P003', 'BR003', 'IN', 30, '2025-01-03', 'BATCH003', NULL, 4.00),
+(4, 'P004', 'BR004', 'IN', 20, '2025-01-07', 'BATCH004', NULL, 10.00),
+(5, 'P005', 'BR005', 'OUT', 10, '2025-01-08', 'BATCH005', '2025-02-05', 2.50),
+(6, 'P006', 'BR006', 'ADJ', 5, '2025-01-10', 'BATCH006', NULL, 30.00),
+(7, 'P007', 'BR007', 'IN', 200, '2025-01-11', 'BATCH007', NULL, 1.00),
+(8, 'P008', 'BR008', 'EXP', 50, '2025-01-12', 'BATCH008', '2025-01-15', 0.80),
+(9, 'P009', 'BR009', 'IN', 40, '2025-01-13', 'BATCH009', NULL, 3.50),
+(10, 'P010', 'BR010', 'IN', 70, '2025-01-14', 'BATCH010', NULL, 1.20);
+
+-- Insert data into sales_transactions
+INSERT INTO sales_transactions 
+(transaction_id, branch_code, transaction_date, staff_id, payment_method, total_amount, discount_amount, loyalty_points_earned, loyalty_points_redeemed, customer_id)
+VALUES
+('TXN001', 'BR001', '2025-01-15 10:15:00', 'STF001', 'CARD', 50.00, 5.00, 10, 0, 'CUST001'),
+('TXN002', 'BR002', '2025-01-15 12:30:00', 'STF002', 'CASH', 25.00, 2.50, 5, 0, 'CUST002'),
+('TXN003', 'BR003', '2025-01-15 14:45:00', 'STF003', 'CARD', 60.00, 6.00, 12, 0, 'CUST003'),
+('TXN004', 'BR004', '2025-01-16 09:20:00', 'STF004', 'CASH', 35.00, 3.50, 7, 2, 'CUST004'),
+('TXN005', 'BR005', '2025-01-16 11:10:00', 'STF005', 'CARD', 45.00, 4.50, 9, 0, 'CUST005'),
+('TXN006', 'BR006', '2025-01-16 13:50:00', 'STF006', 'CASH', 30.00, 3.00, 6, 1, 'CUST006'),
+('TXN007', 'BR007', '2025-01-16 15:30:00', 'STF007', 'CARD', 55.00, 5.50, 11, 0, 'CUST007'),
+('TXN008', 'BR008', '2025-01-17 10:25:00', 'STF008', 'CASH', 40.00, 4.00, 8, 0, 'CUST008'),
+('TXN009', 'BR009', '2025-01-17 12:15:00', 'STF009', 'CARD', 65.00, 6.50, 13, 0, 'CUST009'),
+('TXN010', 'BR010', '2025-01-17 14:55:00', 'STF010', 'CASH', 70.00, 7.00, 14, 1, 'CUST010');
+
+-- Insert data into sales_line_items
+INSERT INTO sales_line_items 
+(transaction_id, line_number, product_code, quantity, unit_price_at_time, discount_percentage, total_line_amount)
+VALUES
+('TXN001', 1, 'P001', 2, 2.50, 10.00, 4.50),
+('TXN001', 2, 'P002', 1, 3.50, 5.00, 3.33),
+('TXN002', 1, 'P003', 3, 7.50, 0.00, 22.50),
+('TXN002', 2, 'P004', 1, 15.00, 10.00, 13.50),
+('TXN003', 1, 'P005', 5, 4.00, 5.00, 19.00),
+('TXN003', 2, 'P006', 1, 50.00, 10.00, 45.00),
+('TXN004', 1, 'P007', 10, 2.00, 0.00, 20.00),
+('TXN005', 1, 'P008', 8, 1.50, 5.00, 11.40),
+('TXN006', 1, 'P009', 2, 5.00, 10.00, 9.00),
+('TXN007', 1, 'P010', 7, 2.00, 10.00, 12.60),
+('TXN007', 2, 'P001', 3, 2.50, 5.00, 7.13),
+('TXN008', 1, 'P002', 4, 3.50, 10.00, 12.60),
+('TXN008', 2, 'P003', 1, 7.50, 5.00, 7.13),
+('TXN009', 1, 'P004', 2, 15.00, 0.00, 30.00),
+('TXN010', 1, 'P005', 6, 4.00, 10.00, 21.60),
+('TXN010', 2, 'P006', 1, 50.00, 5.00, 47.50);
+
 
