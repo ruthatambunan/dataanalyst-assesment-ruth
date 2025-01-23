@@ -1,1 +1,32 @@
+Basic Queries
+Calculate inventory turnover metrics per branch:
+-- Write a query to show:
+-- - Branch name
+-- - Total incoming stock (IN transactions)
+-- - Total outgoing stock (OUT transactions)
+-- - Current stock level
+-- - Number of expired items (EXP transactions)
+-- For the last 3 months, ordered by highest stock turnover rate
+
+
+Analyze staff performance and sales:
+-- Write a query to find:
+-- - Staff ID
+-- - Staff's branch name
+-- - Number of transactions handled
+-- - Total sales amount
+-- - Average transaction value
+-- - Performance score
+-- Only for active staff (no resignation date) in 2023
+
+Intermediate Queries (Optional)
+Customer Purchase Patterns:
+-- Write a query to identify:
+-- - Products that are frequently bought together
+-- - Minimum basket size of 2 items
+-- - Show product pairs, frequency of co-occurrence
+-- - Filter for combinations occurring at least 10 times
+-- Include product names and categories
+-- Order by co-occurrence frequency
+
 
