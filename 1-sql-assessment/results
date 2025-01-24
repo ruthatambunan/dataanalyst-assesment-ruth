@@ -86,6 +86,11 @@ Analyze staff performance and sales:
 -- - Performance score
 -- Only for active staff (no resignation date) in 2023
 
+query :
+
+
+
+
 Intermediate Queries (Optional)
 Customer Purchase Patterns:
 -- Write a query to identify:
