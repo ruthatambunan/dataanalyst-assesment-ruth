@@ -81,100 +81,190 @@ CREATE TABLE sales_line_items (
     FOREIGN KEY (product_code) REFERENCES product_hierarchy(product_code)
 );
 
--- Insert data into branch_details
-INSERT INTO branch_details 
-(branch_code, branch_name, region_id, operation_start_date, is_active, max_capacity, last_renovation_date)
+-- Data for branch_details
+INSERT INTO branch_details (branch_code, branch_name, region_id, operation_start_date, is_active, max_capacity, last_renovation_date)
 VALUES
-('BR001', 'Downtown Branch', 1, '2015-06-01', TRUE, 500, '2021-03-15'),
-('BR002', 'Uptown Branch', 1, '2017-11-15', TRUE, 300, '2022-05-20'),
-('BR003', 'Suburban Branch', 2, '2019-02-10', TRUE, 400, '2023-01-05'),
-('BR004', 'Rural Branch', 3, '2018-07-22', FALSE, 200, '2020-10-10'),
-('BR005', 'City Center Branch', 1, '2020-03-01', TRUE, 600, '2024-01-01'),
-('BR006', 'Eastside Branch', 2, '2016-04-20', TRUE, 350, '2023-05-10'),
-('BR007', 'Westside Branch', 3, '2018-08-15', FALSE, 250, '2022-12-01'),
-('BR008', 'Lakeside Branch', 2, '2019-05-01', TRUE, 400, '2023-03-15'),
-('BR009', 'Mountain Branch', 3, '2017-09-10', FALSE, 150, '2021-08-20'),
-('BR010', 'Harbor Branch', 1, '2021-10-15', TRUE, 500, '2024-07-01');
+('B001', 'Central Branch', 1, '2015-06-01', TRUE, 10000, '2022-01-15'),
+('B002', 'North Branch', 2, '2017-03-20', TRUE, 8000, '2021-07-10'),
+('B003', 'East Branch', 3, '2016-08-15', TRUE, 6000, '2023-05-05'),
+('B004', 'West Branch', 4, '2018-11-05', FALSE, 7000, '2020-12-20'),
+('B005', 'South Branch', 5, '2020-01-10', TRUE, 9000, NULL),
+('B006', 'Northeast Branch', 6, '2019-09-25', TRUE, 5000, '2022-10-10'),
+('B007', 'Northwest Branch', 7, '2014-04-12', TRUE, 7500, '2019-03-05'),
+('B008', 'Southeast Branch', 8, '2015-12-19', FALSE, 4500, '2020-02-01'),
+('B009', 'Southwest Branch', 9, '2021-02-15', TRUE, 4000, NULL),
+('B010', 'Central-East Branch', 1, '2018-07-07', TRUE, 5500, '2023-01-30');
 
--- Insert data into staff_records
-INSERT INTO staff_records 
-(staff_id, branch_code, join_date, role_code, base_salary, supervisor_id, resignation_date, performance_score)
+-- Data for staff_records
+INSERT INTO staff_records (staff_id, branch_code, join_date, role_code, base_salary, supervisor_id, resignation_date, performance_score)
 VALUES
-('STF001', 'BR001', '2016-08-01', 'MGR', 75000.00, NULL, NULL, 4.5),
-('STF002', 'BR002', '2017-01-15', 'ASM', 55000.00, 'STF001', NULL, 4.0),
-('STF003', 'BR003', '2018-06-01', 'CASH', 35000.00, 'STF002', '2023-05-10', 3.8),
-('STF004', 'BR004', '2019-12-01', 'STKR', 30000.00, 'STF001', NULL, 3.6),
-('STF005', 'BR005', '2020-02-15', 'MGR', 70000.00, NULL, NULL, 4.7),
-('STF006', 'BR006', '2016-07-20', 'ASM', 56000.00, 'STF005', NULL, 4.3),
-('STF007', 'BR007', '2018-10-01', 'CASH', 32000.00, 'STF006', '2022-12-15', 3.9),
-('STF008', 'BR008', '2019-03-10', 'STKR', 28000.00, 'STF005', NULL, 3.5),
-('STF009', 'BR009', '2017-11-20', 'MGR', 74000.00, NULL, NULL, 4.8),
-('STF010', 'BR010', '2021-12-15', 'CASH', 36000.00, 'STF009', NULL, 4.2);
+('S001', 'B001', '2016-05-10', 'MGR', 7500000, NULL, NULL, 9.99),
+('S002', 'B002', '2017-08-15', 'SUP', 5000000, 'S001', NULL, 8.87),
+('S003', 'B003', '2018-11-20', 'STF', 3500000, 'S002', '2022-12-31', 8.00),
+('S004', 'B004', '2019-02-25', 'STF', 3000000, 'S002', NULL, 8.53),
+('S005', 'B005', '2020-09-10', 'SUP', 5500000, NULL, NULL, 9.02),
+('S006', 'B006', '2017-07-01', 'MGR', 7000000, NULL, NULL, 9.40),
+('S007', 'B007', '2016-04-20', 'STF', 3200000, 'S006', '2023-06-30', 7.58),
+('S008', 'B008', '2021-03-15', 'STF', 2800000, 'S005', NULL, 8.30),
+('S009', 'B009', '2019-01-05', 'SUP', 6000000, 'S006', NULL, 8.74),
+('S010', 'B010', '2022-11-01', 'MGR', 8000000, NULL, NULL, 9.50);
 
--- Insert data into product_hierarchy
-INSERT INTO product_hierarchy 
-(product_code, product_name, category_l1, category_l2, category_l3, unit_cost, unit_price, supplier_id, minimum_stock, is_perishable)
+-- Data for product_hierarchy
+INSERT INTO product_hierarchy (product_code, product_name, category_l1, category_l2, category_l3, unit_cost, unit_price, supplier_id, minimum_stock, is_perishable)
 VALUES
-('P001', 'Whole Wheat Bread', 'Food', 'Bakery', 'Bread', 1.50, 2.50, 'SUP001', 50, TRUE),
-('P002', 'Almond Milk', 'Food', 'Dairy Alternatives', 'Milk', 2.00, 3.50, 'SUP002', 30, TRUE),
-('P003', 'LED Bulb 12W', 'Electronics', 'Lighting', 'LED Bulbs', 4.00, 7.50, 'SUP003', 20, FALSE),
-('P004', 'Yoga Mat', 'Fitness', 'Accessories', 'Mats', 10.00, 15.00, 'SUP004', 15, FALSE),
-('P005', 'Orange Juice', 'Food', 'Beverages', 'Juice', 2.50, 4.00, 'SUP005', 40, TRUE),
-('P006', 'Running Shoes', 'Footwear', 'Sports', 'Shoes', 30.00, 50.00, 'SUP006', 10, FALSE),
-('P007', 'Notebook', 'Stationery', 'Office Supplies', 'Paper', 1.00, 2.00, 'SUP007', 100, FALSE),
-('P008', 'Chocolate Bar', 'Food', 'Snacks', 'Chocolate', 0.80, 1.50, 'SUP008', 200, TRUE),
-('P009', 'Shampoo', 'Personal Care', 'Hair Care', 'Shampoo', 3.50, 5.00, 'SUP009', 30, FALSE),
-('P010', 'Canned Beans', 'Food', 'Canned Goods', 'Beans', 1.20, 2.00, 'SUP010', 60, FALSE);
+('P001', 'Apple', 'Fruits', 'Fresh Fruits', 'Red Apple', 3.00, 5.00, 'SUP01', 100, TRUE),
+('P002', 'Banana', 'Fruits', 'Fresh Fruits', 'Yellow Banana', 2.00, 4.00, 'SUP02', 50, TRUE),
+('P003', 'Carrot', 'Vegetables', 'Root Vegetables', 'Orange Carrot', 1.50, 3.00, 'SUP01', 200, TRUE),
+('P004', 'Tomato', 'Vegetables', 'Nightshade', 'Fresh Tomato', 2.50, 4.50, 'SUP03', 150, TRUE),
+('P005', 'Milk', 'Dairy', 'Beverages', 'Full Cream Milk', 5.00, 7.50, 'SUP04', 120, TRUE),
+('P006', 'Cheese', 'Dairy', 'Solid Dairy', 'Cheddar Cheese', 10.00, 15.00, 'SUP04', 80, FALSE),
+('P007', 'Bread', 'Bakery', 'Breads', 'Whole Wheat Bread', 3.50, 5.50, 'SUP05', 60, FALSE),
+('P008', 'Eggs', 'Poultry', 'Egg Products', 'Chicken Eggs', 4.00, 6.00, 'SUP06', 300, TRUE),
+('P009', 'Chicken Breast', 'Meat', 'Poultry', 'Boneless Chicken Breast', 8.00, 12.00, 'SUP06', 90, TRUE),
+('P010', 'Rice', 'Staples', 'Grains', 'White Rice', 0.50, 1.00, 'SUP07', 500, FALSE);
 
--- Insert data into inventory_movements
-INSERT INTO inventory_movements 
-(movement_id, product_code, branch_code, transaction_type, quantity, transaction_date, batch_number, expiry_date, unit_cost_at_time)
+-- Data for inventory_movements
+INSERT INTO inventory_movements (movement_id, product_code, branch_code, transaction_type, quantity, transaction_date, batch_number, expiry_date, unit_cost_at_time)
 VALUES
-(1, 'P001', 'BR001', 'IN', 100, '2025-01-01', 'BATCH001', '2025-02-01', 1.50),
-(2, 'P002', 'BR002', 'IN', 50, '2025-01-05', 'BATCH002', '2025-02-10', 2.00),
-(3, 'P003', 'BR003', 'IN', 30, '2025-01-03', 'BATCH003', NULL, 4.00),
-(4, 'P004', 'BR004', 'IN', 20, '2025-01-07', 'BATCH004', NULL, 10.00),
-(5, 'P005', 'BR005', 'OUT', 10, '2025-01-08', 'BATCH005', '2025-02-05', 2.50),
-(6, 'P006', 'BR006', 'ADJ', 5, '2025-01-10', 'BATCH006', NULL, 30.00),
-(7, 'P007', 'BR007', 'IN', 200, '2025-01-11', 'BATCH007', NULL, 1.00),
-(8, 'P008', 'BR008', 'EXP', 50, '2025-01-12', 'BATCH008', '2025-01-15', 0.80),
-(9, 'P009', 'BR009', 'IN', 40, '2025-01-13', 'BATCH009', NULL, 3.50),
-(10, 'P010', 'BR010', 'IN', 70, '2025-01-14', 'BATCH010', NULL, 1.20);
+(1, 'P001', 'B001', 'IN', 200, '2025-01-01', 'B001-123', '2025-01-15', 3.00),
+(2, 'P002', 'B001', 'OUT', 50, '2025-01-02', 'B001-124', '2025-01-20', 2.00),
+(3, 'P003', 'B002', 'IN', 300, '2025-01-03', 'B002-123', '2025-01-20', 1.50),
+(4, 'P004', 'B003', 'EXP', 20, '2025-01-04', 'B003-123', '2025-01-10', 2.50),
+(5, 'P005', 'B003', 'IN', 150, '2025-01-05', 'B003-124', '2025-02-01', 5.00),
+(6, 'P006', 'B004', 'OUT', 30, '2025-01-06', 'B004-125', NULL, 10.00),
+(7, 'P007', 'B005', 'IN', 80, '2025-01-07', 'B005-126', '2025-01-25', 3.50),
+(8, 'P008', 'B006', 'EXP', 25, '2025-01-08', 'B006-127', '2025-01-18', 4.00),
+(9, 'P009', 'B007', 'IN', 100, '2025-01-09', 'B007-128', '2025-02-15', 8.00),
+(10, 'P010', 'B008', 'OUT', 40, '2025-01-10', 'B008-129', NULL, 0.50),
+(11, 'P001', 'B001', 'IN', 150, '2024-11-01', 'B001-130', '2025-01-20', 3.00),
+(12, 'P001', 'B001', 'OUT', 100, '2024-12-15', 'B001-130', NULL, 3.00),
+(13, 'P002', 'B002', 'IN', 200, '2024-10-10', 'B002-130', '2025-01-25', 2.00),
+(14, 'P002', 'B002', 'OUT', 180, '2024-12-20', 'B002-130', NULL, 2.00),
+(15, 'P003', 'B003', 'IN', 300, '2024-11-15', 'B003-130', '2025-02-01', 1.50),
+(16, 'P003', 'B003', 'OUT', 250, '2024-12-30', 'B003-130', NULL, 1.50),
+(17, 'P004', 'B004', 'IN', 100, '2024-10-25', 'B004-130', '2025-01-18', 2.50),
+(18, 'P004', 'B004', 'EXP', 20, '2024-12-05', 'B004-130', '2024-12-05', 2.50),
+(19, 'P005', 'B005', 'IN', 120, '2024-11-20', 'B005-130', '2025-03-01', 5.00),
+(20, 'P005', 'B005', 'OUT', 100, '2025-01-10', 'B005-130', NULL, 5.00),
+(21, 'P006', 'B006', 'IN', 80, '2024-10-15', 'B006-130', NULL, 10.00),
+(22, 'P006', 'B006', 'OUT', 60, '2025-01-05', 'B006-130', NULL, 10.00),
+(23, 'P007', 'B007', 'IN', 90, '2024-11-01', 'B007-130', '2025-01-25', 3.50),
+(24, 'P007', 'B007', 'OUT', 70, '2024-12-10', 'B007-130', NULL, 3.50),
+(25, 'P008', 'B008', 'IN', 200, '2024-11-20', 'B008-130', '2025-01-30', 4.00),
+(26, 'P008', 'B008', 'EXP', 25, '2025-01-10', 'B008-130', '2025-01-10', 4.00),
+(27, 'P009', 'B009', 'IN', 150, '2024-12-01', 'B009-130', '2025-02-20', 8.00),
+(28, 'P009', 'B009', 'OUT', 120, '2025-01-15', 'B009-130', NULL, 8.00),
+(29, 'P010', 'B010', 'IN', 500, '2024-10-10', 'B010-130', NULL, 0.50),
+(30, 'P010', 'B010', 'OUT', 400, '2025-01-05', 'B010-130', NULL, 0.50);
 
--- Insert data into sales_transactions
-INSERT INTO sales_transactions 
-(transaction_id, branch_code, transaction_date, staff_id, payment_method, total_amount, discount_amount, loyalty_points_earned, loyalty_points_redeemed, customer_id)
+INSERT INTO sales_transactions (transaction_id, branch_code, transaction_date, staff_id, payment_method, total_amount, discount_amount, loyalty_points_earned, loyalty_points_redeemed, customer_id)
 VALUES
-('TXN001', 'BR001', '2025-01-15 10:15:00', 'STF001', 'CARD', 50.00, 5.00, 10, 0, 'CUST001'),
-('TXN002', 'BR002', '2025-01-15 12:30:00', 'STF002', 'CASH', 25.00, 2.50, 5, 0, 'CUST002'),
-('TXN003', 'BR003', '2025-01-15 14:45:00', 'STF003', 'CARD', 60.00, 6.00, 12, 0, 'CUST003'),
-('TXN004', 'BR004', '2025-01-16 09:20:00', 'STF004', 'CASH', 35.00, 3.50, 7, 2, 'CUST004'),
-('TXN005', 'BR005', '2025-01-16 11:10:00', 'STF005', 'CARD', 45.00, 4.50, 9, 0, 'CUST005'),
-('TXN006', 'BR006', '2025-01-16 13:50:00', 'STF006', 'CASH', 30.00, 3.00, 6, 1, 'CUST006'),
-('TXN007', 'BR007', '2025-01-16 15:30:00', 'STF007', 'CARD', 55.00, 5.50, 11, 0, 'CUST007'),
-('TXN008', 'BR008', '2025-01-17 10:25:00', 'STF008', 'CASH', 40.00, 4.00, 8, 0, 'CUST008'),
-('TXN009', 'BR009', '2025-01-17 12:15:00', 'STF009', 'CARD', 65.00, 6.50, 13, 0, 'CUST009'),
-('TXN010', 'BR010', '2025-01-17 14:55:00', 'STF010', 'CASH', 70.00, 7.00, 14, 1, 'CUST010');
+('T001', 'B001', '2025-01-01 10:00:00', 'S001', 'Cash', 100.00, 5.00, 10, 0, 'C001'),
+('T002', 'B002', '2025-01-01 12:30:00', 'S002', 'Card', 50.00, 2.50, 5, 0, 'C002'),
+('T003', 'B003', '2025-01-02 09:15:00', 'S003', 'Cash', 120.00, 6.00, 12, 2, 'C003'),
+('T004', 'B004', '2025-01-02 14:45:00', 'S004', 'Card', 80.00, 4.00, 8, 1, 'C004'),
+('T005', 'B005', '2025-01-03 11:10:00', 'S005', 'Cash', 70.00, 3.50, 7, 0, 'C005'),
+('T006', 'B006', '2025-01-03 16:00:00', 'S006', 'Card', 90.00, 4.50, 9, 0, 'C006'),
+('T007', 'B007', '2025-01-04 10:25:00', 'S007', 'Cash', 60.00, 3.00, 6, 0, 'C007'),
+('T008', 'B008', '2025-01-04 13:40:00', 'S008', 'Card', 110.00, 5.50, 11, 1, 'C008'),
+('T009', 'B009', '2025-01-05 15:55:00', 'S009', 'Cash', 130.00, 6.50, 13, 0, 'C009'),
+('T010', 'B010', '2025-01-05 17:20:00', 'S010', 'Card', 140.00, 7.00, 14, 0, 'C010');
 
--- Insert data into sales_line_items
-INSERT INTO sales_line_items 
-(transaction_id, line_number, product_code, quantity, unit_price_at_time, discount_percentage, total_line_amount)
+INSERT INTO sales_line_items (transaction_id, line_number, product_code, quantity, unit_price_at_time, discount_percentage, total_line_amount)
 VALUES
-('TXN001', 1, 'P001', 2, 2.50, 10.00, 4.50),
-('TXN001', 2, 'P002', 1, 3.50, 5.00, 3.33),
-('TXN002', 1, 'P003', 3, 7.50, 0.00, 22.50),
-('TXN002', 2, 'P004', 1, 15.00, 10.00, 13.50),
-('TXN003', 1, 'P005', 5, 4.00, 5.00, 19.00),
-('TXN003', 2, 'P006', 1, 50.00, 10.00, 45.00),
-('TXN004', 1, 'P007', 10, 2.00, 0.00, 20.00),
-('TXN005', 1, 'P008', 8, 1.50, 5.00, 11.40),
-('TXN006', 1, 'P009', 2, 5.00, 10.00, 9.00),
-('TXN007', 1, 'P010', 7, 2.00, 10.00, 12.60),
-('TXN007', 2, 'P001', 3, 2.50, 5.00, 7.13),
-('TXN008', 1, 'P002', 4, 3.50, 10.00, 12.60),
-('TXN008', 2, 'P003', 1, 7.50, 5.00, 7.13),
-('TXN009', 1, 'P004', 2, 15.00, 0.00, 30.00),
-('TXN010', 1, 'P005', 6, 4.00, 10.00, 21.60),
-('TXN010', 2, 'P006', 1, 50.00, 5.00, 47.50);
+('T001', 1, 'P001', 10, 5.00, 5.00, 47.50),
+('T001', 2, 'P002', 5, 4.00, 5.00, 19.00),
+('T002', 1, 'P003', 15, 3.00, 5.00, 42.75),
+('T002', 2, 'P004', 10, 4.50, 5.00, 42.75),
+('T003', 1, 'P005', 10, 7.50, 5.00, 71.25),
+('T003', 2, 'P006', 2, 15.00, 5.00, 28.50),
+('T004', 1, 'P007', 8, 5.50, 5.00, 41.80),
+('T005', 1, 'P008', 10, 6.00, 5.00, 57.00),
+('T006', 1, 'P009', 6, 12.00, 5.00, 68.40),
+('T007', 1, 'P010', 15, 1.00, 5.00, 14.25),
+('T008', 1, 'P001', 20, 5.00, 5.00, 95.00),
+('T009', 1, 'P002', 10, 4.00, 5.00, 38.00),
+('T010', 1, 'P003', 30, 3.00, 5.00, 85.50);
 
 
+--numberone
+SELECT 
+    bd.branch_name AS BranchName,
+    SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) AS TotalIncomingStock,
+    SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END) AS TotalOutgoingStock,
+    (SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) - 
+     SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END)) AS CurrentStockLevel,
+    SUM(CASE WHEN im.transaction_type = 'EXP' AND im.expiry_date < CURRENT_DATE THEN im.quantity ELSE 0 END) AS ExpiredItems,
+    -- Stock Turnover Rate calculation (avoid division by zero)
+    CASE 
+        WHEN (SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) - 
+              SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END)) > 0
+        THEN 
+            SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END) / 
+            (SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) - 
+             SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END))
+        ELSE 0
+    END AS StockTurnoverRate
+FROM 
+    inventory_movements im
+JOIN 
+    branch_details bd ON im.branch_code = bd.branch_code
+WHERE 
+    im.transaction_date >= CURRENT_DATE - INTERVAL '3 MONTH' -- Only for the last 3 months
+GROUP BY 
+    bd.branch_name
+ORDER BY 
+    StockTurnoverRate DESC; -- Ordered by highest stock turnover rate
+    
+
+--numberone
+SELECT 
+    bd.branch_name AS BranchName,
+    SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) AS TotalIncomingStock,
+    SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END) AS TotalOutgoingStock,
+    (SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) - 
+     SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END)) AS CurrentStockLevel,
+    SUM(CASE WHEN im.transaction_type = 'EXP' AND im.expiry_date < CURRENT_DATE THEN im.quantity ELSE 0 END) AS ExpiredItems,
+    -- Stock Turnover Rate calculation (avoid division by zero)
+    CASE 
+        WHEN (SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) - 
+              SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END)) > 0
+        THEN 
+            SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END) / 
+            (SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) - 
+             SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END))
+        ELSE 0
+    END AS StockTurnoverRate
+FROM 
+    inventory_movements im
+JOIN 
+    branch_details bd ON im.branch_code = bd.branch_code
+WHERE 
+    im.transaction_date >= CURRENT_DATE - INTERVAL '3 MONTH' -- Only for the last 3 months
+GROUP BY 
+    bd.branch_name
+ORDER BY 
+    StockTurnoverRate DESC; -- Ordered by highest stock turnover rate
+
+      
+-- numbertwo
+SELECT
+    s.staff_id,
+    b.branch_name,
+    COUNT(st.transaction_id) AS number_of_transactions,
+    SUM(st.total_amount) AS total_sales_amount,
+    AVG(st.total_amount) AS average_transaction_value,
+    s.performance_score
+FROM
+    staff_records s
+JOIN
+    branch_details b ON s.branch_code = b.branch_code
+LEFT JOIN
+    sales_transactions st ON s.staff_id = st.staff_id
+WHERE
+    s.resignation_date IS NULL
+    AND s.join_date <= '2023-12-31'
+GROUP BY
+    s.staff_id, b.branch_name, s.performance_score
+ORDER BY
+    total_sales_amount DESC;
