@@ -87,7 +87,26 @@ Analyze staff performance and sales:
 -- Only for active staff (no resignation date) in 2023
 
 query :
-
+SELECT
+    s.staff_id,
+    b.branch_name,
+    COUNT(st.transaction_id) AS number_of_transactions,
+    SUM(st.total_amount) AS total_sales_amount,
+    AVG(st.total_amount) AS average_transaction_value,
+    s.performance_score
+FROM
+    staff_records s
+JOIN
+    branch_details b ON s.branch_code = b.branch_code
+LEFT JOIN
+    sales_transactions st ON s.staff_id = st.staff_id
+WHERE
+    s.resignation_date IS NULL
+    AND s.join_date <= '2023-12-31'
+GROUP BY
+    s.staff_id, b.branch_name, s.performance_score
+ORDER BY
+    total_sales_amount DESC;
 
 
 
@@ -101,4 +120,26 @@ Customer Purchase Patterns:
 -- Include product names and categories
 -- Order by co-occurrence frequency
 
+SELECT
+    p1.product_name AS product_1_name,
+    p1.category_l1 AS product_1_category,
+    p2.product_name AS product_2_name,
+    p2.category_l1 AS product_2_category,
+    COUNT(*) AS co_occurrence_frequency
+FROM
+    sales_line_items s1
+JOIN
+    sales_line_items s2 ON s1.transaction_id = s2.transaction_id
+JOIN
+    product_hierarchy p1 ON s1.product_code = p1.product_code
+JOIN
+    product_hierarchy p2 ON s2.product_code = p2.product_code
+WHERE
+    s1.product_code < s2.product_code  -- Avoid duplicates of pairs (e.g., P001 & P002, and P002 & P001)
+GROUP BY
+    p1.product_name, p1.category_l1, p2.product_name, p2.category_l1
+HAVING
+    COUNT(*) >= 10  -- Only include pairs bought at least 10 times
+ORDER BY
+    co_occurrence_frequency DESC;
 
