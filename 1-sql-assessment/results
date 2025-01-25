@@ -1,3 +1,4 @@
+-- Number one
 Basic Queries
 Calculate inventory turnover metrics per branch:
 -- Write a query to show:
@@ -37,45 +38,7 @@ GROUP BY
 ORDER BY 
     StockTurnoverRate DESC; -- Ordered by highest stock turnover rate
 
-
-penjelasan :
-Berikut adalah penjelasan alur query secara sederhana:
-
-1. **JOIN Tabel:**
-   - Query ini menggabungkan dua tabel: `inventory_movements` (berisi data pergerakan stok) dan `branch_details` (berisi informasi cabang).
-   - Proses penggabungan dilakukan menggunakan `branch_code`, yang ada di kedua tabel. Ini memungkinkan kita mendapatkan informasi nama cabang (`branch_name`) untuk setiap pergerakan stok.
-
-2. **Kondisi `WHERE`:**
-   - Hanya pergerakan stok dalam 3 bulan terakhir yang diambil, berdasarkan tanggal transaksi (`transaction_date`). 
-   - Filter ini dilakukan dengan `WHERE im.transaction_date >= CURRENT_DATE - INTERVAL '3 MONTH'`, yang memastikan hanya transaksi dalam rentang waktu tersebut yang diproses.
-
-3. **Perhitungan Kolom:**
-   - **TotalIncomingStock**: Menghitung total stok yang masuk (`transaction_type = 'IN'`) dengan menjumlahkan `quantity` untuk transaksi dengan tipe 'IN'.
-   - **TotalOutgoingStock**: Menghitung total stok yang keluar (`transaction_type = 'OUT'`) dengan menjumlahkan `quantity` untuk transaksi dengan tipe 'OUT'.
-   - **CurrentStockLevel**: Menghitung stok saat ini dengan mengurangi `TotalOutgoingStock` dari `TotalIncomingStock`. Ini memberikan gambaran berapa banyak stok yang tersedia saat ini di cabang.
-   - **ExpiredItems**: Menghitung jumlah stok yang sudah kadaluarsa (`transaction_type = 'EXP'` dan `expiry_date < CURRENT_DATE`), dengan menjumlahkan `quantity` dari transaksi yang memiliki tanggal kadaluarsa lebih awal dari hari ini.
-
-4. **Stock Turnover Rate:**
-   - **Stock Turnover Rate** menghitung seberapa cepat stok keluar dibandingkan dengan stok yang masuk.
-   - Jika stok saat ini lebih dari 0, maka perhitungan turnover rate dilakukan dengan membandingkan `TotalOutgoingStock` dengan `CurrentStockLevel` (selisih antara stok masuk dan keluar).
-   - Jika stok saat ini 0 atau kurang, turnover rate dianggap 0 (untuk menghindari pembagian dengan 0).
-
-5. **GROUP BY**:
-   - Data dikelompokkan berdasarkan nama cabang (`bd.branch_name`), sehingga hasilnya akan menunjukkan informasi untuk setiap cabang.
-
-6. **ORDER BY**:
-   - Hasil query diurutkan berdasarkan **StockTurnoverRate** secara menurun (DESC), sehingga cabang dengan turnover rate tertinggi muncul di bagian atas.
-
-### Alur Query:
-1. Gabungkan data pergerakan stok dan data cabang.
-2. Ambil data hanya untuk transaksi dalam 3 bulan terakhir.
-3. Hitung total stok masuk, stok keluar, stok saat ini, dan stok kadaluarsa.
-4. Hitung tingkat perputaran stok (stock turnover rate) berdasarkan jumlah stok yang masuk dan keluar.
-5. Kelompokkan hasilnya berdasarkan nama cabang dan urutkan berdasarkan stock turnover rate tertinggi.
-
-Dengan alur ini, query akan menghasilkan daftar cabang, dengan informasi tentang stok yang masuk, keluar, stok saat ini, barang yang kadaluarsa, dan tingkat perputaran stok untuk masing-masing cabang.
-
-
+-- Number two
 Analyze staff performance and sales:
 -- Write a query to find:
 -- - Staff ID
@@ -108,8 +71,7 @@ GROUP BY
 ORDER BY
     total_sales_amount DESC;
 
-
-
+-- Number three
 Intermediate Queries (Optional)
 Customer Purchase Patterns:
 -- Write a query to identify:
