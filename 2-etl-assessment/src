@@ -1,1 +1,28 @@
+import pandas as pd
+import logging
+import re
+import gdown
+
+# Set up logging for error handling
+# logging.basicConfig(filename='etl_errors.log', level=logging.ERROR)
+
+# Ganti dengan ID file yang sesuai
+file_id_1 = 'FILE_ID_1'  # Ganti dengan ID file Assessment Data Asset Dummy.xlsx
+file_id_2 = 'FILE_ID_2'  # Ganti dengan ID file City Indonesia.xlsx
+
+# URL file Google Drive
+url_1 = f'https://docs.google.com/spreadsheets/d/1wYlvo60_C3WvpOKDZlSCHSDI7SpMXIgb/edit?usp=sharing&ouid=100564588528486416908&rtpof=true&sd=true{file_id_1}'
+url_2 = f'https://docs.google.com/spreadsheets/d/1U-bl2AGVvl7WqULhvWLHBemKuyxuAYTJ/edit?usp=sharing&ouid=100564588528486416908&rtpof=true&sd=true={file_id_2}'
+
+# Unduh file
+gdown.download(url_1, output='Assessment_Data_Asset_Dummy.xlsx', quiet=False)
+gdown.download(url_2, output='City_Indonesia.xlsx', quiet=False)
+
+# Memuat file Excel ke dalam pandas DataFrame
+city_master = pd.read_excel('City Indonesia.xlsx')
+asset_raw = pd.read_excel('Assessment Data Asset Dummy.xlsx')
+
+# View data
+print(city_master.head())
+print(asset_raw.head())
 
