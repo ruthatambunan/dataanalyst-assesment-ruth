@@ -4,11 +4,14 @@
 Brief introduction about yourself and your approach to the assessment.
 
 ## Tools Used
-- List of tools and technologies used
-- Versions of key software
+- Dbeaver (MySQL)
+- Google Colan (Python)
+- Power BI (visualization)
 
 ## Setup Instructions
 Steps to run your solutions
 
 ## Time Spent
-Approximate time spent on each section
+1. SQL Assessment (8-10 hours)
+2. ETL Assessment (8-10 hours)
+3. Data Visualization Assessment (8 hours)
