@@ -1,7 +1,7 @@
 # Data Analyst Technical Assessment
 
 ## Overview
-Brief introduction about yourself and your approach to the assessment.
+Hello, my name is Ruth Anggie Tambunan, a fresh Mathematics graduate with strong analytical and problem-solving skills. My approach to this assessment is structured: I will use SQL to efficiently extract and analyze data, apply ETL processes to ensure data accuracy and readiness, and create clear, intuitive visualizations with tools like Tableau Public or Looker Studio. With my logical thinking and attention to detail, I aim to deliver meaningful insights through the dashboard
 
 ## Tools Used
 - Dbeaver (MySQL)
