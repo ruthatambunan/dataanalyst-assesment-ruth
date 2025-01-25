@@ -3,26 +3,102 @@ import logging
 import re
 import gdown
 
-# Set up logging for error handling
-# logging.basicConfig(filename='etl_errors.log', level=logging.ERROR)
+from google.colab import drive
+drive.mount('/content/drive')
 
-# Ganti dengan ID file yang sesuai
-file_id_1 = 'FILE_ID_1'  # Ganti dengan ID file Assessment Data Asset Dummy.xlsx
-file_id_2 = 'FILE_ID_2'  # Ganti dengan ID file City Indonesia.xlsx
+#Upload file
+file_id_1 = '1wYlvo60_C3WvpOKDZlSCHSDI7SpMXIgb'
+file_id_2 = '1U-bl2AGVvl7WqULhvWLHBemKuyxuAYTJ'
 
 # URL file Google Drive
-url_1 = f'https://docs.google.com/spreadsheets/d/1wYlvo60_C3WvpOKDZlSCHSDI7SpMXIgb/edit?usp=sharing&ouid=100564588528486416908&rtpof=true&sd=true{file_id_1}'
-url_2 = f'https://docs.google.com/spreadsheets/d/1U-bl2AGVvl7WqULhvWLHBemKuyxuAYTJ/edit?usp=sharing&ouid=100564588528486416908&rtpof=true&sd=true={file_id_2}'
+url_1 = f'https://drive.google.com/uc?id={file_id_1}'
+url_2 = f'https://drive.google.com/uc?id={file_id_2}'
 
-# Unduh file
+# Download file
 gdown.download(url_1, output='Assessment_Data_Asset_Dummy.xlsx', quiet=False)
 gdown.download(url_2, output='City_Indonesia.xlsx', quiet=False)
 
-# Memuat file Excel ke dalam pandas DataFrame
-city_master = pd.read_excel('City Indonesia.xlsx')
-asset_raw = pd.read_excel('Assessment Data Asset Dummy.xlsx')
+# Load file Excel into pandas DataFrame
+city_master = pd.read_excel('City_Indonesia.xlsx')
+asset_raw = pd.read_excel('Assessment_Data_Asset_Dummy.xlsx')
 
-# View data
-print(city_master.head())
-print(asset_raw.head())
 
+#Data Validation
+# Check for required fields
+def check_required_fields(df, required_fields):
+    missing_fields = [field for field in required_fields if field not in df.columns]
+    if missing_fields:
+        logging.error(f"Missing required fields: {missing_fields}")
+        raise ValueError(f"Missing required fields: {missing_fields}")
+
+required_fields_city = ['City', 'CityCode', 'Province', 'Region', 'RegionalCode']
+check_required_fields(city_master, required_fields_city)
+required_fields_asset = ['Funcloc', 'Alamat1', 'Alamat2', 'Alamat3', 'Alamat4', 'SiteName']
+check_required_fields(asset_raw, required_fields_asset)
+
+# Validate numeric ranges
+def validate_numeric_range(df, column, min_val, max_val):
+    invalid_rows = df[(df[column] < min_val) | (df[column] > max_val)]
+    if not invalid_rows.empty:
+        logging.error(f"Invalid values in {column}: {invalid_rows}")
+        print(f"Invalid values in {column}: {invalid_rows.index.tolist()}")
+
+#Validate data formats (province(provinsi), district(kabkot), etc)
+#convert data type to string
+city_master[["City", "CityCode", "Province", "Region"]] = city_master[["City", "CityCode", "Province", "Region"]].astype("string")
+asset_raw[["Alamat1","Alamat2","Alamat3","Alamat4","SiteName"]] = asset_raw[["Alamat1","Alamat2","Alamat3","Alamat4","SiteName"]].astype("string")
+
+#Verify numeric values are within acceptable ranges
+validate_numeric_range(city_master, 'RegionalCode', 1, 11)
+
+#Data Cleaning
+#transform asset_raw['Alamat4'] as the same format as city_master['City']
+def format_location(text):
+    # Pola untuk mencocokkan ", KOTA"
+    match = re.search(r"(\w+), KOTA", text)
+    if match:
+        # Memindahkan kata sebelum ", KOTA" ke depan sebagai "Kota "
+        return f"Kota {match.group(1)}"
+    else:
+        # Menambahkan "Kabupaten " jika tidak cocok dengan pola
+        return f"Kabupaten {text}"
+
+asset_raw["Alamat4"] = asset_raw["Alamat4"].apply(format_location)
+
+#convert asset_raw['Alamat4'] as sentence title
+def convert_to_title_case(sentence):
+    return sentence.title()
+
+asset_raw['Alamat4'] = asset_raw['Alamat4'].apply(convert_to_title_case)
+
+#Change the name of columns 'Alamat4' to 'City'
+asset_raw.rename(columns={'Alamat4': 'City'}, inplace=True)
+
+# Data Transformation
+# Join city_master and asset_raw orderby funcloc and group by CityCode as selected_data
+join_data = pd.merge(asset_raw, city_master, on="City", how="inner")
+selected_data = join_data[["City","CityCode","RegionalCode","Funcloc"]]
+selected_data = selected_data.sort_values(by=["CityCode", "Funcloc"])
+
+# Menambahkan kolom nomor urut
+selected_data["RowNum"] = (selected_data.groupby("CityCode").cumcount() + 1).apply(lambda x: str(x).zfill(3))
+
+selected_data["RegionalCode"] = selected_data["RegionalCode"].apply(lambda x: str(x).zfill(2))
+# Menggabungkan CityCode, RegionalCode, dan RowNum menjadi kolom baru
+selected_data["Internal_Site_ID"] = selected_data["CityCode"] + "-" + selected_data["RegionalCode"].astype(str)+ "-" + selected_data["RowNum"].astype(str)
+
+# Memilih kolom yang diinginkan
+selected_columns = selected_data[["Internal_Site_ID", "City", "Funcloc"]]
+
+# Menyimpan hasil ke dalam file CSV baru
+selected_columns.to_csv("filtered_data.csv", index=False)
+
+print("File 'filtered_data.csv' telah dibuat!")
+
+# 4. Error Handling (log invalid records)
+def log_invalid_records(asset_data):
+    invalid_records = asset_data[asset_data['CityCode'].isna()]
+    if not invalid_records.empty:
+        logging.error(f"Invalid records found: {invalid_records}")
+
+log_invalid_records(selected_data)
