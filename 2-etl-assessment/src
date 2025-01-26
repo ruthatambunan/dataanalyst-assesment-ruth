@@ -57,10 +57,10 @@ def format_location(text):
     # Pola untuk mencocokkan ", KOTA"
     match = re.search(r"(\w+), KOTA", text)
     if match:
-        # Memindahkan kata sebelum ", KOTA" ke depan sebagai "Kota "
+        # Move the word before ', KOTA' to the front as 'Kota'
         return f"Kota {match.group(1)}"
     else:
-        # Menambahkan "Kabupaten " jika tidak cocok dengan pola
+        # Add 'Kabupaten' if it does not match the pattern
         return f"Kabupaten {text}"
 
 asset_raw["Alamat4"] = asset_raw["Alamat4"].apply(format_location)
@@ -80,17 +80,17 @@ join_data = pd.merge(asset_raw, city_master, on="City", how="inner")
 selected_data = join_data[["City","CityCode","RegionalCode","Funcloc"]]
 selected_data = selected_data.sort_values(by=["CityCode", "Funcloc"])
 
-# Menambahkan kolom nomor urut
+# Add a serial number column
 selected_data["RowNum"] = (selected_data.groupby("CityCode").cumcount() + 1).apply(lambda x: str(x).zfill(3))
 
 selected_data["RegionalCode"] = selected_data["RegionalCode"].apply(lambda x: str(x).zfill(2))
-# Menggabungkan CityCode, RegionalCode, dan RowNum menjadi kolom baru
+# Combine CityCode, RegionalCode, and RowNum into a new column
 selected_data["Internal_Site_ID"] = selected_data["CityCode"] + "-" + selected_data["RegionalCode"].astype(str)+ "-" + selected_data["RowNum"].astype(str)
 
-# Memilih kolom yang diinginkan
+# Select the desired column
 selected_columns = selected_data[["Internal_Site_ID", "City", "Funcloc"]]
 
-# Menyimpan hasil ke dalam file CSV baru
+# Save the results to a new CSV file
 selected_columns.to_csv("filtered_data.csv", index=False)
 
 print("File 'filtered_data.csv' telah dibuat!")
