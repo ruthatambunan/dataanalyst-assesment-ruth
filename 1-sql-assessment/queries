@@ -216,36 +216,6 @@ GROUP BY
 ORDER BY 
     StockTurnoverRate DESC; -- Ordered by highest stock turnover rate
     
-
---numberone
-SELECT 
-    bd.branch_name AS BranchName,
-    SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) AS TotalIncomingStock,
-    SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END) AS TotalOutgoingStock,
-    (SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) - 
-     SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END)) AS CurrentStockLevel,
-    SUM(CASE WHEN im.transaction_type = 'EXP' AND im.expiry_date < CURRENT_DATE THEN im.quantity ELSE 0 END) AS ExpiredItems,
-    -- Stock Turnover Rate calculation (avoid division by zero)
-    CASE 
-        WHEN (SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) - 
-              SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END)) > 0
-        THEN 
-            SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END) / 
-            (SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) - 
-             SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END))
-        ELSE 0
-    END AS StockTurnoverRate
-FROM 
-    inventory_movements im
-JOIN 
-    branch_details bd ON im.branch_code = bd.branch_code
-WHERE 
-    im.transaction_date >= CURRENT_DATE - INTERVAL '3 MONTH' -- Only for the last 3 months
-GROUP BY 
-    bd.branch_name
-ORDER BY 
-    StockTurnoverRate DESC; -- Ordered by highest stock turnover rate
-
       
 -- numbertwo
 SELECT
