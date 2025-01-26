@@ -71,7 +71,7 @@ GROUP BY
 ORDER BY
     total_sales_amount DESC;
 
--- Number three
+
 Intermediate Queries (Optional)
 Customer Purchase Patterns:
 -- Write a query to identify:
