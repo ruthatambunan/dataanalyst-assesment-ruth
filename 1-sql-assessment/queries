@@ -1,3 +1,5 @@
+-- This queries is to make tables and input mock data 
+
 -- Stores information about retail branches
 CREATE TABLE branch_details (
     branch_code VARCHAR(10) PRIMARY KEY,
@@ -185,56 +187,3 @@ VALUES
 ('T008', 1, 'P001', 20, 5.00, 5.00, 95.00),
 ('T009', 1, 'P002', 10, 4.00, 5.00, 38.00),
 ('T010', 1, 'P003', 30, 3.00, 5.00, 85.50);
-
-
---numberone
-SELECT 
-    bd.branch_name AS BranchName,
-    SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) AS TotalIncomingStock,
-    SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END) AS TotalOutgoingStock,
-    (SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) - 
-     SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END)) AS CurrentStockLevel,
-    SUM(CASE WHEN im.transaction_type = 'EXP' AND im.expiry_date < CURRENT_DATE THEN im.quantity ELSE 0 END) AS ExpiredItems,
-    -- Stock Turnover Rate calculation (avoid division by zero)
-    CASE 
-        WHEN (SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) - 
-              SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END)) > 0
-        THEN 
-            SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END) / 
-            (SUM(CASE WHEN im.transaction_type = 'IN' THEN im.quantity ELSE 0 END) - 
-             SUM(CASE WHEN im.transaction_type = 'OUT' THEN im.quantity ELSE 0 END))
-        ELSE 0
-    END AS StockTurnoverRate
-FROM 
-    inventory_movements im
-JOIN 
-    branch_details bd ON im.branch_code = bd.branch_code
-WHERE 
-    im.transaction_date >= CURRENT_DATE - INTERVAL '3 MONTH' -- Only for the last 3 months
-GROUP BY 
-    bd.branch_name
-ORDER BY 
-    StockTurnoverRate DESC; -- Ordered by highest stock turnover rate
-    
-      
--- numbertwo
-SELECT
-    s.staff_id,
-    b.branch_name,
-    COUNT(st.transaction_id) AS number_of_transactions,
-    SUM(st.total_amount) AS total_sales_amount,
-    AVG(st.total_amount) AS average_transaction_value,
-    s.performance_score
-FROM
-    staff_records s
-JOIN
-    branch_details b ON s.branch_code = b.branch_code
-LEFT JOIN
-    sales_transactions st ON s.staff_id = st.staff_id
-WHERE
-    s.resignation_date IS NULL
-    AND s.join_date <= '2023-12-31'
-GROUP BY
-    s.staff_id, b.branch_name, s.performance_score
-ORDER BY
-    total_sales_amount DESC;
