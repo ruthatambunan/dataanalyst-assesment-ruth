@@ -9,21 +9,24 @@ Hello, my name is Ruth Anggie Tambunan, a freshgraduate of Mathematics at Univer
 - Power BI (visualization)
 
 ## Setup Instructions
-#1. SQL Assessment
+1. SQL Assessment
+
 Understand the relationships between tables.
 Input the necessary data according to the requirements.
 Understand the problem being asked.
 Implement the logic to solve the problem using SQL.
 Generate the output as required by the problem.
 
-#2. ETL Assessment
+2. ETL Assessment
+
 Download the data.
 Input the data into the source code.
 Follow the correct order of steps in the source code.
 Understand the logic behind the process.
 Produce the output as expected by the problem.
 
-#3. Visualization
+3. Visualization
+
 Download the data.
 Input the data into Power BI or any other visualization tool.
 Create visualizations that align with the desired outcome.
